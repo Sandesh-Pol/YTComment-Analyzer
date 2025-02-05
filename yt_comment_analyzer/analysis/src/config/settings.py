@@ -1,3 +1,4 @@
 API_SERVICE_NAME = "youtube"
 API_VERSION = "v3"
 YOUTUBE_API_KEY = "AIzaSyBmkRo--2j9zLcyujQdhiGXnTvu_3M_TlI"  
+PERSPECTIVE_API_KEY = "AIzaSyCwBE-PJL-JeefFlMJHI0wsOe75ed6O0uw"

@@ -6,3 +6,6 @@ textblob
 statistics
 matplotlib
 googletrans
+torch 
+transformers
+requests 
