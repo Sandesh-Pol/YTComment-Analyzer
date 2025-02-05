@@ -1,6 +1,6 @@
 # Ignore the config/settings.py file (contains sensitive API keys)
+yt_comment_analyzer/analysis/src/configconfig/settings.py
 config/settings.py
-
 # Ignore Python compiled files
 __pycache__/
 *.py[cod]
@@ -49,3 +49,4 @@ htmlcov/
 
 # Ignore cache directories
 .cache/
+yt_comment_analyzer/analysis/src/config/settings.py
