@@ -6,7 +6,10 @@ from processing.cleaners import clean_text
 from analysis.sentiment import SentimentAnalyzer
 from analysis.emojis import EmojiAnalyzer
 from analysis.translateAnalyzer import TranslateSentimentAnalyzer
-from analysis.ToxicityAnalyzer import PerspectiveToxicityAnalyzer, BertToxicityAnalyzer
+from analysis.ToxicityAnalyzer import PerspectiveToxicityAnalyzer, BertToxicityAnalyzer,MahaTweetBERTToxicityAnalyzer
+import nltk
+nltk.download('vader_lexicon')
+
 
 class YouTubeCommentAnalyzer:
     def __init__(self):
@@ -17,7 +20,7 @@ class YouTubeCommentAnalyzer:
         self.emoji = EmojiAnalyzer()
         self.toxicity_perspective = PerspectiveToxicityAnalyzer()
         self.toxicity_bert = BertToxicityAnalyzer()
-
+        self.toxicity_maha_tweet_bert = MahaTweetBERTToxicityAnalyzer()  # MahaTweetBERT Analyzer
     async def analyze(self, video_url, comment_limit=100):
         video_id = YouTubeURLParser().extract_video_id(video_url)
         if not video_id:
@@ -36,6 +39,7 @@ class YouTubeCommentAnalyzer:
         # Perform toxicity analysis
         toxicity_perspective = self.toxicity_perspective.analyze(cleaned_comments)
         toxicity_bert = self.toxicity_bert.analyze(cleaned_comments)
+        toxicity_maha_tweet_bert = self.toxicity_maha_tweet_bert.analyze(cleaned_comments)
 
         return {
             'sentiment': {
@@ -48,11 +52,13 @@ class YouTubeCommentAnalyzer:
             },
             'toxicity': {
                 'perspective': toxicity_perspective,
-                'bert': toxicity_bert
+                'bert': toxicity_bert,
+                'maha_tweet_bert': toxicity_maha_tweet_bert
             },
             'emojis': self.emoji.top_emojis(raw_comments),
             'total_comments': len(cleaned_comments)
         }
+
 
 def display_sentiment(sentiment, translated_sentiment):
     print("\nSentiment Analysis (Original Text):")
@@ -73,10 +79,15 @@ def display_toxicity(toxicity):
     print("\nToxicity Analysis (Perspective API):")
     for comment, score in toxicity['perspective']:
         print(f"{comment[:50]}... -> Toxicity Score: {score:.2f}")
-    
+
     print("\nToxicity Analysis (BERT Model):")
     for comment, score in toxicity['bert']:
         print(f"{comment[:50]}... -> Toxicity Score: {score:.2f}")
+
+    print("\nToxicity Analysis (MahaTweetBERT Model):")
+    for comment, score in toxicity['maha_tweet_bert']:
+        print(f"{comment[:50]}... -> Toxicity Score: {score:.2f}")
+
 
 def display_emojis(emojis):
     print("\nTop Emojis:")
@@ -89,6 +100,7 @@ def show_visualizations(results):
     plt.pie(sizes, labels=labels, autopct='%1.1f%%')
     plt.title("Sentiment Distribution (VADER)")
     plt.show()
+
 
 async def main():
     analyzer = YouTubeCommentAnalyzer()
@@ -104,4 +116,4 @@ async def main():
     show_visualizations(results)
 
 if __name__ == "__main__":
-    asyncio.run(main())  # Run async function properly
+    asyncio.run(main())

@@ -9,3 +9,6 @@ googletrans
 torch 
 transformers
 requests 
+google-api-python-client
+aiogoogletrans
+langdetect
