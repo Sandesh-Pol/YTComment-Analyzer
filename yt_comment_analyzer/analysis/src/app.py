@@ -1,120 +1,123 @@
 import asyncio
-import matplotlib.pyplot as plt
+import time
 from youtube.api_client import YouTubeClient, CommentFetcher
 from youtube.parser import YouTubeURLParser
 from processing.cleaners import clean_text
 from analysis.sentiment import SentimentAnalyzer
 from analysis.emojis import EmojiAnalyzer
-from analysis.translateAnalyzer import TranslateSentimentAnalyzer
-from analysis.ToxicityAnalyzer import PerspectiveToxicityAnalyzer, BertToxicityAnalyzer
+from analysis.ToxicityAnalyzer import BertToxicityAnalyzer
 import nltk
 
-from analysis.top_liked import TopLikedComments
 nltk.download('vader_lexicon')
-
 
 class YouTubeCommentAnalyzer:
     def __init__(self):
         self.client = YouTubeClient()
         self.fetcher = CommentFetcher(self.client)
-        self.sentiment = SentimentAnalyzer()  # English Sentiment Analyzer
-        self.translated_sentiment = TranslateSentimentAnalyzer()  # Translated Sentiment Analyzer
+        self.sentiment = SentimentAnalyzer()
         self.emoji = EmojiAnalyzer()
-        self.toxicity_perspective = PerspectiveToxicityAnalyzer()
         self.toxicity_bert = BertToxicityAnalyzer()
+
     async def analyze(self, video_url, comment_limit=100):
         video_id = YouTubeURLParser().extract_video_id(video_url)
         if not video_id:
             raise ValueError("Invalid YouTube URL")
 
         # Fetch comments
+        start_time = time.time()
         raw_comments = self.fetcher.fetch_comments(video_id, comment_limit)
+        fetch_time = time.time() - start_time
+
+        start_time = time.time()
         cleaned_comments = [clean_text(c) for c in raw_comments]
-
-        top_liked_comments = TopLikedComments().get_top_liked_comments(video_id, top_n=10)
-
+        clean_time = time.time() - start_time
 
         # Perform sentiment analysis
+        start_time = time.time()
         sentiment_vader = self.sentiment.analyze_vader(cleaned_comments)
+        sentiment_vader_time = time.time() - start_time
+
+        start_time = time.time()
         sentiment_textblob = self.sentiment.analyze_textblob(cleaned_comments)
-        translated_vader = await self.translated_sentiment.analyze_vader(cleaned_comments)
-        translated_textblob = await self.translated_sentiment.analyze_textblob(cleaned_comments)
+        sentiment_textblob_time = time.time() - start_time
 
         # Perform toxicity analysis
-        toxicity_perspective = self.toxicity_perspective.analyze(cleaned_comments)
-        toxicity_bert = self.toxicity_bert.analyze(cleaned_comments)
+        start_time = time.time()
+        toxic_comments = self.toxicity_bert.analyze(cleaned_comments)  # Get toxic comments
+        toxicity_bert_time = time.time() - start_time
+
+        # Get most used emojis
+        top_emojis = self.emoji.top_emojis(raw_comments)
 
         return {
             'sentiment': {
                 'vader': sentiment_vader,
                 'textblob': sentiment_textblob
             },
-            'translated_sentiment': {
-                'vader': translated_vader,
-                'textblob': translated_textblob
-            },
             'toxicity': {
-                'perspective': toxicity_perspective,
-                'bert': toxicity_bert,
+                'bert': toxic_comments,  # Store toxic comments here
             },
-            'emojis': self.emoji.top_emojis(raw_comments),
+            'emojis': top_emojis,
             'total_comments': len(cleaned_comments),
-            'top_liked_comments': top_liked_comments
+            'time_complexity': {
+                'fetch_comments': fetch_time,
+                'clean_comments': clean_time,
+                'sentiment_vader': sentiment_vader_time,
+                'sentiment_textblob': sentiment_textblob_time,
+                'toxicity_bert': toxicity_bert_time,
+            }
         }
 
+# Function to neatly print results
+def print_results(results):
+    print("\n📊 ------------- YouTube Comment Analysis ------------- 📊\n")
 
+    # Display total comments analyzed
+    print(f"📌 Total Comments Analyzed: {results['total_comments']}\n")
 
-def display_sentiment(sentiment, translated_sentiment):
-    print("\nSentiment Analysis (Original Text):")
-    for engine, data in sentiment.items():
-        print(f"\n{engine.title()} Results:")
-        print(f"Overall Score: {data['overall']:.2f}")
-        for category, percentage in data['breakdown'].items():
-            print(f"{category.title()}: {percentage}%")
+    # Display Sentiment Analysis
+    print("🔹 Sentiment Analysis:")
+    for method, data in results['sentiment'].items():
+        print(f"   ✅ {method.title()} Sentiment:")
+        print(f"   - Positive: {data['breakdown'].get('positive', 0)}%")
+        print(f"   - Neutral: {data['breakdown'].get('neutral', 0)}%")
+        print(f"   - Negative: {data['breakdown'].get('negative', 0)}%")
+        print(f"   - Overall Score: {data['overall']:.2f}\n")
 
-    print("\nSentiment Analysis (Translated Text):")
-    for engine, data in translated_sentiment.items():
-        print(f"\n{engine.title()} Results:")
-        print(f"Overall Score: {data['overall']:.2f}")
-        for category, percentage in data['breakdown'].items():
-            print(f"{category.title()}: {percentage}%")
+    # Display Toxic Comments
+    print("⚠️ Toxic Comments Detected:")
+    if results['toxicity']['bert']:
+        for idx, (comment, score) in enumerate(results['toxicity']['bert'], start=1):
+            print(f"   {idx}. [{score:.2f} Toxicity] {comment[:50]}...")
+    else:
+        print("   🎉 No significantly toxic comments detected!")
+    print("\n")
 
-def display_toxicity(toxicity):
-    print("\nToxicity Analysis (Perspective API):")
-    for comment, score in toxicity['perspective']:
-        print(f"{comment[:50]}... -> Toxicity Score: {score:.2f}")
+    # Display Most Used Emojis
+    print("😀 Most Used Emojis:")
+    if results['emojis']:
+        for emoji, count in results['emojis']:
+            print(f"   {emoji} - {count} times")
+    else:
+        print("   😕 No emojis detected in comments.")
+    print("\n")
 
-    print("\nToxicity Analysis (BERT Model):")
-    for comment, score in toxicity['bert']:
-        print(f"{comment[:50]}... -> Toxicity Score: {score:.2f}")
-
-
-
-def display_emojis(emojis):
-    print("\nTop Emojis:")
-    for emoji, count in emojis:
-        print(f"{emoji}: {count} times")
-
-
-
+    # Display Time Complexity for each step
+    print("⏳ Processing Time Analysis:")
+    for feature, time_taken in results['time_complexity'].items():
+        print(f"   🔹 {feature.replace('_', ' ').title()}: {time_taken:.4f} seconds")
+    
+    print("\n✅ Analysis Complete!")
 
 async def main():
     analyzer = YouTubeCommentAnalyzer()
+    video_url = input("🔗 Enter YouTube video URL: ")
+    comment_limit = int(input("📝 Number of comments to analyze (max 5000): "))
 
-    video_url = input("Enter YouTube video URL: ")
-    comment_limit = int(input("Number of comments to analyze (max 5000): "))
-
+    print("\n⏳ Analyzing comments... Please wait...\n")
     results = await analyzer.analyze(video_url, comment_limit)
 
-    display_sentiment(results['sentiment'], results['translated_sentiment'])
-    display_toxicity(results['toxicity'])
-    display_emojis(results['emojis'])
-    print("📌 Top Liked Comments:")
-    for idx, comment in enumerate(results['top_liked_comments'], start=1):
-        print(f"{idx}. ({comment['like_count']} likes) {comment['text']}")
-
-    print("\n✅ Analysis Complete!")
-
+    print_results(results)
 
 if __name__ == "__main__":
     asyncio.run(main())
