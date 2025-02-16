@@ -1,0 +1,9 @@
+body{
+    background-color: #1E1E2F;
+}
+.card{
+    background-color: #27293D;
+}
+.remove-scrollbar::-webkit-scrollbar{
+    width:0;
+}
