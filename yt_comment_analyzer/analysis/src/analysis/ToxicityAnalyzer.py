@@ -1,4 +1,3 @@
-import requests
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 import torch.nn.functional as F
