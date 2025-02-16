@@ -46,7 +46,6 @@ class YouTubeCommentAnalyzer:
         toxic_comments = self.toxicity_bert.analyze(cleaned_comments)  # Get toxic comments
         toxicity_bert_time = time.time() - start_time
 
-        # Get most used emojis
         top_emojis = self.emoji.top_emojis(raw_comments)
 
         return {
