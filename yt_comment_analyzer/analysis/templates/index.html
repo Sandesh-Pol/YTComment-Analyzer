@@ -1,14 +1,128 @@
 {% load static %}
-<!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Comment Analyzer</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <title>YouTube Comment Analyzer</title>
 </head>
+
 <body>
-    <h1>YouTube Comment Analyzer</h1>
-    <p>Analyze comments for sentiment and trends.</p>
+  <div class="main flex w-full h-full gap-x-5 justify-end">
+    <div class="fixed left-0 sidebar w-[20%] h-full flex flex-col justify-center">
+      <div class="sidebar-container w-[80%] h-[90%] bg-[#2183F8] self-end rounded-md px-2">
+        <div class="user-info flex gap-x-2 items-center border-b-2 border-white py-3">
+          <div class="user-pic size-8 rounded-full bg-white"></div>
+          <div class="username text-white">{{ user.username }}</div>
+        </div>
+        <div class="menu-items grid mt-10 px-5 gap-10">
+          <div class="text-white font-light uppercase tracking-wider text-sm cursor-pointer">
+            Dashboard
+          </div>
+          <div class="text-white font-light uppercase tracking-wider text-sm cursor-pointer">
+            Sentiment Analysis
+          </div>
+          <div class="text-white font-light uppercase tracking-wider text-sm cursor-pointer">
+            Toxicity Detection
+          </div>
+          <div class="text-white font-light uppercase tracking-wider text-sm cursor-pointer">
+            Report
+          </div>
+          <div class="text-white font-light uppercase tracking-wider text-sm cursor-pointer">
+            Preview
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col w-[80%] h-full gap-5">
+      <div class="page1 w-full h-full flex flex-col gap-3">
+        <div class="h-[3%]"></div>
+        <div class="h-[16rem] w-full flex gap-3 px-5 overflow-y-hidden">
+          <div class="card w-2/6 h-full">
+            <div class="top-reactions text-white text-sm font-semibold text-center mt-2">
+              Top Reactions
+            </div>
+            <div class="reaction-list flex flex-col mt-3 px-4 h-full overflow-y-scroll remove-scrollbar gap-y-4">
+              {% for reaction in top_reactions %}
+              <div class="reaction flex justify-between border-b-2 border-white py-1 px-3">
+                <div class="emoji">{{ reaction.emoji }}</div>
+                <div class="reaction-count text-white text-sm">{{ reaction.count }}</div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="card w-4/6 h-full">
+            <div class="top-reactions text-white text-sm font-semibold text-center mt-2">
+              Top Liked Comments
+            </div>
+            <div class="reaction-list flex flex-col mt-3 px-4 h-full overflow-y-scroll remove-scrollbar gap-y-4">
+              {% for comment in top_comments %}
+              <div class="reaction flex justify-between items-center border-b-2 border-white py-1 px-3">
+                <div class="emoji flex gap-2">
+                  <img class="w-5" src="{% static 'assets/icons/like.svg' %}" alt="like icon" />
+                  <div class="count text-white">{{ comment.likes }}</div>
+                </div>
+                <div class="username text-white text-sm">{{ comment.author }}</div>
+                <div class="username text-white text-sm cursor-pointer underline tracking-wider">
+                  Read Comment
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        <div class="h-[24rem] w-full flex px-5 gap-x-2">
+          <div class="card w-1/2 h-full">
+            <div class="w-full h-full">
+              <canvas id="vadarSentiment" class="w-full p-2"></canvas>
+            </div>
+          </div>
+          <div class="card w-1/2 h-full">
+            <div class="w-full h-full">
+              <canvas id="textblobSentiment" class="w-full p-2"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page2 w-full h-full flex flex-col gap-3 py-10">
+        <div class="flex flex-col w-full h-full px-5 gap-5">
+          <div class="card w-full h-[18rem] overflow-y-hidden">
+            <div class="toxic-comment text-white text-sm font-semibold text-center mt-2">
+              Detected Toxic Comment
+            </div>
+            <div class="reaction-list flex flex-col mt-3 px-4 h-full overflow-y-scroll remove-scrollbar gap-y-4">
+              {% for comment in toxic_comments %}
+              <div class="reaction flex justify-between items-center border-b-2 border-white py-1 px-3">
+                <div class="username text-white text-sm">{{ comment.author }}</div>
+                <div class="username text-white text-sm cursor-pointer underline tracking-wider">
+                  Read Comment
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="card w-full h-[18rem] overflow-y-hidden">
+            <div class="suggestion text-white text-sm font-semibold text-center mt-2">
+              Suggestion for YouTuber
+            </div>
+            <div class="reaction-list flex flex-col mt-3 px-4 h-full overflow-y-scroll remove-scrollbar gap-y-4">
+              {% for suggestion in suggestions %}
+              <div class="reaction flex justify-between items-center border-b-2 border-white py-1 px-3">
+                <div class="username text-white text-sm">{{ suggestion.author }}</div>
+                <div class="username text-white text-sm cursor-pointer underline tracking-wider">
+                  Read Comment
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
+<script src="{% static 'js/script.js' %}"></script>
+<script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </html>
