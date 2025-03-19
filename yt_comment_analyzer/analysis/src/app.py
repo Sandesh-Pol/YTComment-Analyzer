@@ -1,7 +1,7 @@
 import asyncio
 import time
-from youtube.api_client import YouTubeClient, CommentFetcher
-from youtube.parser import YouTubeURLParser
+from yt_module .api_client import YouTubeClient, CommentFetcher
+from yt_module .parser import YouTubeURLParser
 from processing.cleaners import clean_text
 from analysis.sentiment import SentimentAnalyzer
 from analysis.emojis import EmojiAnalyzer
