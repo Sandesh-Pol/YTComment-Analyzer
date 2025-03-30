@@ -3,9 +3,9 @@ import time
 from yt_module .api_client import YouTubeClient, CommentFetcher
 from yt_module .parser import YouTubeURLParser
 from processing.cleaners import clean_text
-from analysis.sentiment import SentimentAnalyzer
-from analysis.emojis import EmojiAnalyzer
-from analysis.ToxicityAnalyzer import BertToxicityAnalyzer
+from analysis.src.analysis.sentiment import SentimentAnalyzer
+from analysis.src.analysis.emojis import EmojiAnalyzer
+from analysis.src.analysis.ToxicityAnalyzer import BertToxicityAnalyzer
 import nltk
 
 nltk.download('vader_lexicon')
