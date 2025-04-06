@@ -19,7 +19,7 @@ export const Sidebar = () => {
     <>
       <Navbar toggleSidebar={toggleSidebar} />
       <div 
-        className={`h-screen fixed left-0 top-24 flex flex-col transition-all duration-300 ${
+        className={`h-screen fixed left-0 top-24 flex transition-all duration-300 ${
           isCollapsed ? "w-16" : "w-60"
         }`}
       >
@@ -33,9 +33,11 @@ export const Sidebar = () => {
               <img className="size-6 min-w-6" src={report} alt="" />
               <span className={`text-sm whitespace-nowrap transition-opacity duration-200 ${isCollapsed ? "opacity-0" : "opacity-100"}`}>Analysis</span>
             </div>
-            <div className="option flex items-center gap-4 cursor-pointer text-white hover:opacity-80 transition-opacity">
-              <img className="size-6 min-w-6" src={toxic} alt="" />
-              <span className={`text-sm whitespace-nowrap transition-opacity duration-200 ${isCollapsed ? "opacity-0" : "opacity-100"}`}>Toxicity Review</span>
+            <div className="relative flex items-center">
+              <div className="option flex items-center gap-4 cursor-pointer text-white hover:opacity-80 transition-opacity">
+                <img className="size-6 min-w-6" src={toxic} alt="" />
+                <span className={`text-sm whitespace-nowrap transition-opacity duration-200 ${isCollapsed ? "opacity-0" : "opacity-100"}`}>Toxicity Review</span>
+              </div>
             </div>
             <div className="option flex items-center gap-4 cursor-pointer text-white hover:opacity-80 transition-opacity">
               <img className="size-6 min-w-6" src={ai} alt="" />
@@ -65,6 +67,8 @@ export const Sidebar = () => {
             </div>
           </div>
         </div>
+        <div className={`absolute right-0 top-32 h-[10rem] w-1 bg-white rounded-full ${isCollapsed ? "hidden" : "block"}`}></div>
+
       </div>
     </>
   );
