@@ -9,7 +9,7 @@ const Hero = () => {
       <img
         src={youtubeIcon}
         alt="YouTube Logo"
-        className="size-40 mt-10 mb-4 animate-bounce"
+        className="size-40 mt-10 mb-4"
       />
 
       <h1 className="text-5xl font-bold text-white mb-2">
