@@ -37,6 +37,8 @@ local.db
 # Ignore macOS system files
 .DS_Store
 
+*.pyc
+
 # Ignore Jupyter Notebook checkpoints
 .ipynb_checkpoints/
 
