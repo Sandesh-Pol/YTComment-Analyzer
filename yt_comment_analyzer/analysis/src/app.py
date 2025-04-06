@@ -1,11 +1,18 @@
 import asyncio
 import time
-from yt_module .api_client import YouTubeClient, CommentFetcher
-from yt_module .parser import YouTubeURLParser
+import sys
+import os
+
+# Add the project root directory to Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+from yt_module.api_client import YouTubeClient, CommentFetcher
+from yt_module.parser import YouTubeURLParser
 from processing.cleaners import clean_text
-from analysis.src.analysis.sentiment import SentimentAnalyzer
-from analysis.src.analysis.emojis import EmojiAnalyzer
-from analysis.src.analysis.ToxicityAnalyzer import BertToxicityAnalyzer
+from analysis.sentiment import SentimentAnalyzer
+from analysis.emojis import EmojiAnalyzer
+from analysis.ToxicityAnalyzer import BertToxicityAnalyzer
+from analysis.geminiAnalyzer import YouTubeCommentAnalyzer as GeminiAnalyzer
 import nltk
 
 nltk.download('vader_lexicon')
@@ -48,15 +55,28 @@ class YouTubeCommentAnalyzer:
 
         top_emojis = self.emoji.top_emojis(raw_comments)
 
+        # Perform Gemini analysis
+        start_time = time.time()
+        gemini_analyzer = GeminiAnalyzer(raw_comments)
+        gemini_summary = gemini_analyzer.get_summary()
+        gemini_demands = gemini_analyzer.get_public_demand()
+        gemini_suggestions = gemini_analyzer.get_suggestions()
+        gemini_time = time.time() - start_time
+
         return {
             'sentiment': {
                 'vader': sentiment_vader,
                 'textblob': sentiment_textblob
             },
             'toxicity': {
-                'bert': toxic_comments,  # Store toxic comments here
+                'bert': toxic_comments,
             },
             'emojis': top_emojis,
+            'gemini': {
+                'summary': gemini_summary,
+                'demands': gemini_demands,
+                'suggestions': gemini_suggestions
+            },
             'total_comments': len(cleaned_comments),
             'time_complexity': {
                 'fetch_comments': fetch_time,
@@ -64,6 +84,7 @@ class YouTubeCommentAnalyzer:
                 'sentiment_vader': sentiment_vader_time,
                 'sentiment_textblob': sentiment_textblob_time,
                 'toxicity_bert': toxicity_bert_time,
+                'gemini_analysis': gemini_time
             }
         }
 
@@ -99,6 +120,13 @@ def print_results(results):
             print(f"   {emoji} - {count} times")
     else:
         print("   😕 No emojis detected in comments.")
+    print("\n")
+
+    # Display Gemini Analysis
+    print("�� Gemini Analysis:")
+    print(f"   Summary: {results['gemini']['summary']}")
+    print(f"   Public Demands: {results['gemini']['demands']}")
+    print(f"   Suggestions: {results['gemini']['suggestions']}")
     print("\n")
 
     # Display Time Complexity for each step

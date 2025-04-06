@@ -1,12 +1,16 @@
 from googleapiclient.discovery import build
-from analysis.src.config import settings
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 class YouTubeClient:
     def __init__(self):
         self.service = build(
-            settings.API_SERVICE_NAME,
-            settings.API_VERSION,
-            developerKey=settings.YOUTUBE_API_KEY
+            'youtube',  # API service name
+            'v3',      # API version
+            developerKey=os.getenv('YOUTUBE_API_KEY')  # Load API key from .env
         )
     
     def get_comment_threads(self, video_id, limit=100, page_token=None):

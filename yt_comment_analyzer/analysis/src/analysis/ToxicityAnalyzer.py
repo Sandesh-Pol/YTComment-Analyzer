@@ -1,7 +1,6 @@
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 import torch.nn.functional as F
-from analysis.src.config import settings
 import matplotlib.pyplot as plt
 
 class BertToxicityAnalyzer:
