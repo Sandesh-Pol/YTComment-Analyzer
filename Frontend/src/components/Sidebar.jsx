@@ -68,6 +68,7 @@ export const Sidebar = () => {
           </div>
         </div>
         <div className={`absolute right-0 top-32 h-[10rem] w-1 bg-white rounded-full`}></div>
+        <div className={`absolute right-0 top-32 h-[10rem] w-1 bg-white rounded-full ${isCollapsed ? "hidden" : "block"}`}></div>
       </div>
     </>
   );
