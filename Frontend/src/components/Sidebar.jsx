@@ -1,18 +1,20 @@
 import { Navbar } from "./Navbar.jsx";
+import { NavLink } from "react-router-dom";
+import { useTheme } from "../hooks/useTheme.js";
 
 import home from "../assets/icons/home.svg";
 import report from "../assets/icons/report.svg";
 import toxic from "../assets/icons/toxic.svg";
 import ai from "../assets/icons/ai.svg";
 import profile from "../assets/icons/profile.svg";
-import { useState } from "react";
 
-export const Sidebar = () => {
-  const [isDarkMode, setIsDarkMode] = useState(true);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+export const Sidebar = ({ isCollapsed, toggleSidebar }) => {
+  const { isDarkMode, toggleDarkMode } = useTheme();
 
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
+  const getLinkStyles = (isActive) => {
+    return `flex items-center w-full px-4 py-3 cursor-pointer transition-all duration-200 
+      ${isCollapsed ? "justify-center" : ""} 
+      ${isActive ? "dark:bg-gray-700/30 bg-gray-200 rounded-xl" : "hover:dark:bg-gray-800/50 hover:bg-gray-200/50 hover:rounded-xl"}`;
   };
 
   return (
@@ -24,36 +26,34 @@ export const Sidebar = () => {
         }`}
       >
         <div className="flex-1 flex flex-col justify-between overflow-hidden">
-          <div className="sidebar-menu flex flex-col gap-8 mt-8 px-6">
-            <div className="option flex items-center gap-4 cursor-pointer text-white hover:opacity-80 transition-opacity">
-              <img className="size-6 min-w-6" src={home} alt="" />
-              <span className={`text-sm whitespace-nowrap transition-opacity duration-200 ${isCollapsed ? "opacity-0" : "opacity-100"}`}>Home</span>
-            </div>
-            <div className="option flex items-center gap-4 cursor-pointer text-white hover:opacity-80 transition-opacity">
-              <img className="size-6 min-w-6" src={report} alt="" />
-              <span className={`text-sm whitespace-nowrap transition-opacity duration-200 ${isCollapsed ? "opacity-0" : "opacity-100"}`}>Analysis</span>
-            </div>
-            <div className="relative flex items-center">
-              <div className="option flex items-center gap-4 cursor-pointer text-white hover:opacity-80 transition-opacity">
-                <img className="size-6 min-w-6" src={toxic} alt="" />
-                <span className={`text-sm whitespace-nowrap transition-opacity duration-200 ${isCollapsed ? "opacity-0" : "opacity-100"}`}>Toxicity Review</span>
-              </div>
-            </div>
-            <div className="option flex items-center gap-4 cursor-pointer text-white hover:opacity-80 transition-opacity">
-              <img className="size-6 min-w-6" src={ai} alt="" />
-              <span className={`text-sm whitespace-nowrap transition-opacity duration-200 ${isCollapsed ? "opacity-0" : "opacity-100"}`}>AI Insights</span>
-            </div>
+          <div className="sidebar-menu flex flex-col gap-2 mt-8">
+            <NavLink to="/" className={({isActive}) => getLinkStyles(isActive)}>
+              <img className="size-6 min-w-6 dark:invert-0 invert" src={home} alt="" />
+              <span className={`text-sm whitespace-nowrap transition-opacity duration-200 dark:text-white ${isCollapsed ? "opacity-0 absolute" : "opacity-100 ml-4"}`}>Home</span>
+            </NavLink>
+            <NavLink to="/analysis" className={({isActive}) => getLinkStyles(isActive)}>
+              <img className="size-6 min-w-6 dark:invert-0 invert" src={report} alt="" />
+              <span className={`text-sm whitespace-nowrap transition-opacity duration-200 dark:text-white ${isCollapsed ? "opacity-0 absolute" : "opacity-100 ml-4"}`}>Analysis</span>
+            </NavLink>
+            <NavLink to="/toxicity" className={({isActive}) => getLinkStyles(isActive)}>
+              <img className="size-6 min-w-6 dark:invert-0 invert" src={toxic} alt="" />
+              <span className={`text-sm whitespace-nowrap transition-opacity duration-200 dark:text-white ${isCollapsed ? "opacity-0 absolute" : "opacity-100 ml-4"}`}>Toxicity Review</span>
+            </NavLink>
+            <NavLink to="/ai-insights" className={({isActive}) => getLinkStyles(isActive)}>
+              <img className="size-6 min-w-6 dark:invert-0 invert" src={ai} alt="" />
+              <span className={`text-sm whitespace-nowrap transition-opacity duration-200 dark:text-white ${isCollapsed ? "opacity-0 absolute" : "opacity-100 ml-4"}`}>AI Insights</span>
+            </NavLink>
           </div>
 
-          <div className="sidebar-footer flex flex-col gap-8 mb-32 px-6">
-            <div className="option flex items-center gap-4 cursor-pointer text-white hover:opacity-80 transition-opacity">
-              <img className="size-6 min-w-6" src={profile} alt="" />
-              <span className={`text-sm whitespace-nowrap transition-opacity duration-200 ${isCollapsed ? "opacity-0" : "opacity-100"}`}>Profile</span>
-            </div>
-            <div className={`flex items-center gap-4 text-white ${isCollapsed ? "justify-center" : ""}`}>
+          <div className="sidebar-footer flex flex-col gap-2 mb-28">
+            <NavLink to="/profile" className={({isActive}) => getLinkStyles(isActive)}>
+              <img className="size-6 min-w-6 dark:invert-0 invert" src={profile} alt="" />
+              <span className={`text-sm whitespace-nowrap transition-opacity duration-200 dark:text-white ${isCollapsed ? "opacity-0 absolute" : "opacity-100 ml-4"}`}>Profile</span>
+            </NavLink>
+            <div className={`flex items-center py-3 ${isCollapsed ? "justify-center px-0" : "px-4"} gap-4 dark:text-white`}>
               <button
-                onClick={() => setIsDarkMode(!isDarkMode)}
-                className={`w-10 h-5 rounded-full relative transition-colors  ${isCollapsed ? "opacity-0" : "opacity-100"} ${
+                onClick={toggleDarkMode}
+                className={`w-10 h-5 rounded-full relative transition-colors ${isCollapsed ? "opacity-0" : "opacity-100"} ${
                   isDarkMode ? "bg-red-600" : "bg-gray-600"
                 }`}
               >
@@ -63,12 +63,11 @@ export const Sidebar = () => {
                   }`}
                 ></div>
               </button>
-              <span className={`text-sm whitespace-nowrap transition-opacity duration-200 ${isCollapsed ? "opacity-0" : "opacity-100"}`}>Dark Mode</span>
+              <span className={`text-sm whitespace-nowrap transition-opacity duration-200 ${isCollapsed ? "opacity-0 absolute" : "opacity-100"}`}>Dark Mode</span>
             </div>
           </div>
         </div>
-        <div className={`absolute right-0 top-32 h-[10rem] w-1 bg-white rounded-full`}></div>
-        <div className={`absolute right-0 top-32 h-[10rem] w-1 bg-white rounded-full ${isCollapsed ? "hidden" : "block"}`}></div>
+        <div className="absolute top-36 h-[10rem] w-1 bg-black dark:bg-white rounded-full -right-2 `"></div>
       </div>
     </>
   );

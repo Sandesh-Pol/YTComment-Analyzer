@@ -1,0 +1,124 @@
+import { useState } from "react";
+import { useTheme } from "../hooks/useTheme.js";
+import commentInput from "../assets/images/comment-input.svg";
+const LinkInputSection = ({ isCollapsed }) => {
+  useTheme(); // Using for theme context
+
+  const [videoUrl, setVideoUrl] = useState("");
+  const [commentCount, setCommentCount] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle the form submission logic here
+    console.log("Video URL:", videoUrl);
+    console.log("Comment Count:", commentCount);
+  };
+
+  return (
+    <div
+      className={`flex min-h-screen transition-all duration-300 ${
+        isCollapsed ? "pl-0" : "pl-4"
+      }`}
+    >
+      <div className="w-full max-w-5xl mx-auto px-4 py-12">
+        <div className="w-full flex flex-col md:flex-row gap-8 items-center">
+          <div className="w-full md:w-5/12 flex justify-center">
+            <img
+              src={commentInput}
+              alt="YouTube Comment Analysis"
+              className="max-w-full h-auto object-contain max-h-96"
+            />
+          </div>
+
+          <div className="w-full md:w-7/12">
+            <h1 className="text-4xl md:text-5xl font-bold dark:text-white text-gray-800 mb-4">
+              Ready to Decode Your Comments?
+            </h1>
+
+            <p className="text-lg dark:text-gray-300 text-gray-600 mb-8">
+              <span className="inline-block mr-2">🔍</span> Paste your YouTube
+              video link and choose how many comments you want Insightify to
+              analyze.
+            </p>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Video URL input */}
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-lg font-medium dark:text-white text-gray-700">
+                  <span className="text-xl">📺</span> Video URL
+                </label>
+                <input
+                  type="url"
+                  value={videoUrl}
+                  onChange={(e) => setVideoUrl(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl border dark:border-gray-700 border-gray-300 
+                          dark:bg-gray-800 bg-white dark:text-white text-gray-800 
+                          focus:outline-none focus:ring-2 focus:ring-brightRed"
+                  placeholder="https://www.youtube.com/watch?v=abc123"
+                  required
+                />
+                <p className="text-sm dark:text-gray-400 text-gray-500">
+                  <span className="inline-block mr-1">ℹ️</span> We support
+                  public videos only. No login needed.
+                </p>
+              </div>
+
+              {/* Comment count input */}
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-lg font-medium dark:text-white text-gray-700">
+                  <span className="text-xl">💬</span> Number of Comments
+                </label>
+                <input
+                  type="number"
+                  list="comment-options"
+                  value={commentCount}
+                  onChange={(e) => setCommentCount(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl border dark:border-gray-700 border-gray-300 
+              dark:bg-gray-800 bg-white dark:text-white text-gray-800 
+              focus:outline-none focus:ring-2 focus:ring-brightRed"
+                  placeholder="e.g., 100"
+                  min="1"
+                  max="500"
+                  required
+                />
+
+                <datalist id="comment-options">
+                  <option value="50" />
+                  <option value="100" />
+                  <option value="250" />
+                  <option value="500" />
+                </datalist>
+                <p className="text-sm dark:text-gray-400 text-gray-500">
+                  <span className="inline-block mr-1">🔝</span> We'll analyze
+                  the top comments first. max value is 500
+                </p>
+              </div>
+
+              <button
+                type="submit"
+                className="bg-brightRed text-white px-8 py-2 rounded-full text-base font-semibold hover:bg-brightRed/80 transition-colors shadow-[0_0_30px_rgba(242,0,1,0.5)]"
+              >
+                Analyze My Comments
+              </button>
+
+              {/* Features highlight */}
+              <div className="pt-4 flex flex-wrap gap-4 justify-center md:justify-start">
+                <div className="flex items-center gap-2 dark:text-gray-300 text-gray-600">
+                  <span className="text-xl">😊</span> Sentiment Analysis
+                </div>
+                <div className="flex items-center gap-2 dark:text-gray-300 text-gray-600">
+                  <span className="text-xl">🔍</span> Emotion Detection
+                </div>
+                <div className="flex items-center gap-2 dark:text-gray-300 text-gray-600">
+                  <span className="text-xl">🛡️</span> Toxicity Filtering
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default LinkInputSection;
