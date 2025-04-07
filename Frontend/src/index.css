@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* The CSS code `.hide-scrollbar::-webkit-scrollbar { display: none; }` is targeting the webkit
+scrollbar (specifically for webkit-based browsers like Chrome and Safari) and setting its display
+property to none, effectively hiding the scrollbar. */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+}

@@ -7,7 +7,7 @@ export const Navbar = ({ toggleSidebar }) => {
   useTheme();
 
   return (
-    <nav className="fixed top-0 left-0 w-full flex items-center gap-6 px-6 py-2 z-10">
+    <nav className="fixed top-0 left-0 w-full flex items-center gap-6 px-6 z-10 py-6 dark:bg-jetBlack bg-gray-100 h-14">
       <div className="menu-icon">
         <img
           className="w-7 h-7 cursor-pointer hover:opacity-80 transition-opacity dark:invert-0 invert select-none"

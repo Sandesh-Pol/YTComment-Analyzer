@@ -6,7 +6,6 @@ import { NavLink } from "react-router-dom";
 import { useTheme } from "../hooks/useTheme.js";
 
 const Hero = ({ isCollapsed }) => {
-  // Theme is applied via CSS classes
   useTheme();
 
   return (
@@ -14,20 +13,20 @@ const Hero = ({ isCollapsed }) => {
       <img
         src={youtubeIcon}
         alt="YouTube Logo"
-        className="size-40 mt-10 mb-4"
+        className="size-40 mt-10 mb-4 select-none"
       />
 
-      <h1 className="text-5xl font-bold dark:text-white text-gray-800 mb-2">
+      <div className="text-5xl font-bold dark:text-white text-gray-800 mb-2 select-none">
         EVERY COMMENT COUNTS
-      </h1>
-      <h2 className="text-5xl font-bold dark:text-white text-gray-800 mb-8">
+      </div>
+      <div className="text-5xl font-bold dark:text-white text-gray-800 mb-8 select-none">
         GET THE MEANING BEHIND IT
-      </h2>
+      </div>
 
-      <p className="dark:text-gray-300 text-gray-600 text-lg mb-8 max-w-2xl">
+      <div className="dark:text-gray-300 text-gray-600 text-lg mb-8 max-w-2xl cursor-pointer">
         Get instant sentiment analysis on your YouTube comments. Know what your
         audience feels — at a glance.
-      </p>
+      </div>
 
     <NavLink to="/link-input">
       <button className="bg-brightRed text-white px-8 py-2 rounded-full text-base font-semibold hover:bg-brightRed/80 transition-colors shadow-[0_0_50px_rgba(242,0,1,0.5)]">
