@@ -20,7 +20,7 @@ export const Sidebar = ({ isCollapsed, toggleSidebar }) => {
   return (
     <>
       <Navbar toggleSidebar={toggleSidebar} />
-      <div 
+      <div
         className={`h-screen fixed left-0 top-24 flex transition-all duration-300 ${
           isCollapsed ? "w-16" : "w-60"
         }`}
