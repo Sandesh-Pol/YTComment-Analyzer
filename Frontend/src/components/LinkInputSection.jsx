@@ -59,7 +59,7 @@ const LinkInputSection = ({ isCollapsed }) => {
                 />
                 <p className="text-sm dark:text-gray-400 text-gray-500">
                   <span className="inline-block mr-1">ℹ️</span> We support
-                  public videos only. No login needed.
+                  public videos only.
                 </p>
               </div>
 
@@ -101,7 +101,6 @@ const LinkInputSection = ({ isCollapsed }) => {
                 Analyze My Comments
               </button>
 
-              {/* Features highlight */}
               <div className="pt-4 flex flex-wrap gap-4 justify-center md:justify-start">
                 <div className="flex items-center gap-2 dark:text-gray-300 text-gray-600">
                   <span className="text-xl">😊</span> Sentiment Analysis
