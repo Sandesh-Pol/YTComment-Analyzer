@@ -26,6 +26,8 @@ async def analyze_comments(video_url, comment_limit):
     if not video_id:
         return {'error': 'Invalid YouTube URL'}
 
+    # Reset comments list before fetching new comments
+    fetcher.comments = []
     raw_comments = fetcher.fetch_comments(video_id, comment_limit)
     cleaned_comments = [clean_text(c) for c in raw_comments]
 
@@ -52,6 +54,8 @@ async def analyze_with_gemini(video_url, comment_limit):
     if not video_id:
         return {'error': 'Invalid YouTube URL'}
 
+    # Reset comments list before fetching new comments
+    fetcher.comments = []
     raw_comments = fetcher.fetch_comments(video_id, comment_limit)
     cleaned_comments = [clean_text(c) for c in raw_comments]
 
