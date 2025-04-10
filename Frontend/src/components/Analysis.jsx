@@ -22,12 +22,10 @@ const Analysis = ({ isCollapsed }) => {
       const parsedData = JSON.parse(storedData);
       console.log("ParsedData:",parsedData);
 
-      // Validate the data structure
       if (!parsedData || typeof parsedData !== 'object') {
         throw new Error("Invalid data format");
       }
 
-      // Ensure required properties exist with default values
       const validatedData = {
         total_comments: parsedData.total_comments || 0,
         sentiment: {
@@ -100,14 +98,7 @@ const Analysis = ({ isCollapsed }) => {
 
   return (
     <div className={`p-4 lg:p-8 transition-all duration-300 min-h-screen overflow-y-scroll hide-scrollbar mt-10 ${isCollapsed ? "pl-0" : "pl-4"} max-w-[1920px] mx-auto`}>
-      <div className="mb-8 pl-4 lg:pl-6 mt-3">
-        <h1 className="text-3xl lg:text-4xl font-bold dark:text-white text-gray-800 mb-4">Analysis Dashboard</h1>
-        <p className="dark:text-gray-300 text-gray-600 text-base lg:text-lg max-w-2xl">
-          View detailed analysis of your YouTube comments and engagement metrics.
-        </p>
-      </div>
-      
-      <div className="mt-8 px-2 lg:px-4">
+      <div className="px-2 lg:px-4">
         {sentimentData && <SentimentAnalysis sentiment={sentimentData} />}
       </div>
     </div>

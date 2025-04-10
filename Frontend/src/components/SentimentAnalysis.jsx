@@ -175,25 +175,68 @@ export function SentimentAnalysis({ sentiment }) {
   }
 
   const renderCustomizedLabel = (props) => {
-    const { cx, cy, midAngle, innerRadius, outerRadius, value } = props;
+    const { cx, cy, midAngle, outerRadius, value, fill } = props;
     const RADIAN = Math.PI / 180;
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    // Only show labels for segments with value > 5%
+    if (value <= 5) return null;
+
+    // Calculate optimal line length based on value
+    const lineLength = Math.min(Math.max(value * 1.5, 30), 60);
     
-    return value > 3 ? (
-      <text 
-        x={x} 
-        y={y} 
-        fill="#FFFFFF"
-        filter="drop-shadow(0px 1px 1px rgb(0 0 0 / 0.3))"
-        textAnchor="middle" 
-        dominantBaseline="central"
-        className="text-sm font-semibold"
-      >
-        {value.toFixed(1)}%
-      </text>
-    ) : null;
+    // Calculate points for the label line
+    const radius = outerRadius + 10;
+    const x1 = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y1 = cy + radius * Math.sin(-midAngle * RADIAN);
+    
+    // Add a slight curve to the line to avoid overlaps
+    const curve = 20 * Math.sin(midAngle * RADIAN);
+    const x2 = cx + (radius + lineLength) * Math.cos(-midAngle * RADIAN) + curve;
+    const y2 = cy + (radius + lineLength) * Math.sin(-midAngle * RADIAN);
+
+    const textAnchor = Math.cos(-midAngle * RADIAN) >= 0 ? 'start' : 'end';
+    const textOffset = Math.cos(-midAngle * RADIAN) >= 0 ? 5 : -5;
+
+    return (
+      <g>
+        <path
+          d={`M${x1},${y1}Q${x1 + curve},${y1} ${x2},${y2}`}
+          stroke={fill}
+          strokeWidth={1}
+          fill="none"
+          opacity={0.6}
+        />
+        <text
+          x={x2 + textOffset}
+          y={y2}
+          textAnchor={textAnchor}
+          dominantBaseline="central"
+          className="text-xs font-medium fill-gray-700 dark:fill-gray-300"
+          style={{ fontSize: '11px', opacity: 0.9 }}
+        >
+          {`${value.toFixed(1)}`}
+        </text>
+      </g>
+    );
+  };
+
+  // Center content for each chart
+  const renderCenterContent = (score, type) => {
+    const emoji = score > 0.3 ? "😊" : score < -0.3 ? "😔" : "😐";
+    const scoreColor = getSentimentTextColor(score);
+    
+    return (
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="text-center flex flex-col items-center gap-1">
+          <span className="text-2xl mb-1">{emoji}</span>
+          <span className={`text-xl font-bold ${scoreColor}`}>
+            {score.toFixed(2)}
+          </span>
+          <span className="text-sm text-gray-500 dark:text-gray-400">
+            {type}
+          </span>
+        </div>
+      </div>
+    );
   };
 
   const getSentimentTextColor = (score) => {
@@ -221,8 +264,9 @@ export function SentimentAnalysis({ sentiment }) {
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <div className="w-full h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
-        <div className="w-full space-y-8 p-6">
+      <div className="w-full overflow-hidden">
+        <div className="w-full p-6 space-y-6">
+          {/* Header Section */}
           <div className="space-y-2">
             <h2 className="text-3xl font-bold tracking-tight dark:text-white">Sentiment Analysis</h2>
             <p className="text-lg text-gray-600 dark:text-gray-300">
@@ -230,79 +274,28 @@ export function SentimentAnalysis({ sentiment }) {
             </p>
           </div>
 
-          <div className="grid gap-6">
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-semibold dark:text-white">Overall Sentiment Scores</h3>
-                  <div className="relative group">
-                    <span className="cursor-help">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500 dark:text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                      </svg>
-                    </span>
-                    <div className="absolute hidden group-hover:block right-0 w-64 p-3 mt-2 space-y-2 text-sm bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10">
-                      <p className="text-gray-600 dark:text-gray-300">Scores range from -1 (very negative) to +1 (very positive)</p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {isLoading ? (
-                    <>
-                      <div className="animate-pulse bg-gray-100 dark:bg-gray-800 rounded-lg h-24"></div>
-                      <div className="animate-pulse bg-gray-100 dark:bg-gray-800 rounded-lg h-24"></div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
-                        <div className="flex flex-col">
-                          <span className="text-gray-600 dark:text-gray-300 font-medium mb-2">VADER Score:</span>
-                          <span className={`text-3xl font-bold ${getSentimentTextColor(safeSentiment.vader.score)}`}>
-                            {Number(safeSentiment.vader.score).toFixed(2)}
-                          </span>
-                          <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            {safeSentiment.vader.score > 0 ? "Positive" : safeSentiment.vader.score < 0 ? "Negative" : "Neutral"} sentiment
-                          </span>
-                        </div>
-                      </div>
-                      
-                      <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
-                        <div className="flex flex-col">
-                          <span className="text-gray-600 dark:text-gray-300 font-medium mb-2">TextBlob Score:</span>
-                          <span className={`text-3xl font-bold ${getSentimentTextColor(safeSentiment.textblob.score)}`}>
-                            {Number(safeSentiment.textblob.score).toFixed(2)}
-                          </span>
-                          <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            {safeSentiment.textblob.score > 0 ? "Positive" : safeSentiment.textblob.score < 0 ? "Negative" : "Neutral"} sentiment
-                          </span>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-white dark:bg-gray-900 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
-                <h3 className="text-xl font-semibold mb-8 dark:text-white">VADER Sentiment Distribution</h3>
+          {/* Charts Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* VADER Chart */}
+            <div className="bg-white dark:bg-gray-900 overflow-hidden rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+              <div className="p-6">
+                <h3 className="text-xl font-semibold mb-4 dark:text-white">VADER Distribution</h3>
                 {isLoading ? (
                   <ChartSkeleton />
                 ) : (
-                  <div className="w-full h-[400px]">
+                  <div className="w-full aspect-square relative">
                     <ResponsiveContainer width="100%" height="100%">
-                      <PieChart className="flex gap-5">
+                      <PieChart>
                         <Pie
                           data={vaderData}
-                          cx="55%"
+                          cx="50%"
                           cy="50%"
-                          innerRadius={100}
-                          outerRadius={145}
+                          innerRadius={80}
+                          outerRadius={110}
                           dataKey="value"
-                          labelLine={false}
+                          labelLine={true}
                           label={renderCustomizedLabel}
-                          paddingAngle={4}
+                          paddingAngle={2}
                           isAnimationActive={false}
                           strokeWidth={1}
                           stroke="#1E293B"
@@ -311,7 +304,6 @@ export function SentimentAnalysis({ sentiment }) {
                             <Cell 
                               key={`vader-cell-${index}`} 
                               fill={entry.color}
-                              style={{ filter: 'drop-shadow(0px 2px 4px rgb(0 0 0 / 0.1))' }}
                             />
                           ))}
                         </Pie>
@@ -319,43 +311,34 @@ export function SentimentAnalysis({ sentiment }) {
                           content={<CustomTooltip />}
                           cursor={false}
                         />
-                        <Legend 
-                          layout="vertical"
-                          verticalAlign="middle"
-                          align="right"
-                          wrapperStyle={{
-                            fontSize: "12px",
-                            paddingLeft: "32px",
-                            lineHeight: "28px"
-                          }}
-                          formatter={(value) => (
-                            <span className="text-gray-700 dark:text-gray-300 font-medium">{value}</span>
-                          )}
-                        />
                       </PieChart>
                     </ResponsiveContainer>
+                    {renderCenterContent(safeSentiment.vader.score, 'VADER')}
                   </div>
                 )}
               </div>
+            </div>
 
-              <div className="bg-white dark:bg-gray-900 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
-                <h3 className="text-xl font-semibold mb-8 dark:text-white">TextBlob Sentiment Distribution</h3>
+            {/* TextBlob Chart */}
+            <div className="bg-white dark:bg-gray-900 overflow-hidden rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+              <div className="p-6">
+                <h3 className="text-xl font-semibold mb-4 dark:text-white">TextBlob Distribution</h3>
                 {isLoading ? (
                   <ChartSkeleton />
                 ) : (
-                  <div className="w-full h-[400px]">
+                  <div className="w-full aspect-square relative">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
                           data={textblobData}
-                          cx="55%"
+                          cx="50%"
                           cy="50%"
-                          innerRadius={100}
-                          outerRadius={145}
+                          innerRadius={80}
+                          outerRadius={110}
                           dataKey="value"
-                          labelLine={false}
+                          labelLine={true}
                           label={renderCustomizedLabel}
-                          paddingAngle={4}
+                          paddingAngle={2}
                           isAnimationActive={false}
                           strokeWidth={1}
                           stroke="#1E293B"
@@ -364,7 +347,6 @@ export function SentimentAnalysis({ sentiment }) {
                             <Cell 
                               key={`textblob-cell-${index}`} 
                               fill={entry.color}
-                              style={{ filter: 'drop-shadow(0px 2px 4px rgb(0 0 0 / 0.1))' }}
                             />
                           ))}
                         </Pie>
@@ -372,24 +354,37 @@ export function SentimentAnalysis({ sentiment }) {
                           content={<CustomTooltip />}
                           cursor={false}
                         />
-                        <Legend
-                          layout="vertical"
-                          verticalAlign="middle"
-                          align="right"
-                          wrapperStyle={{
-                            fontSize: "12px",
-                            paddingLeft: "32px",
-                            lineHeight: "28px"
-                          }}
-                          formatter={(value) => (
-                            <span className="text-gray-700 dark:text-gray-300 font-medium">{value}</span>
-                          )}
-                        />
                       </PieChart>
                     </ResponsiveContainer>
+                    {renderCenterContent(safeSentiment.textblob.score, 'TextBlob')}
                   </div>
                 )}
               </div>
+            </div>
+          </div>
+
+          {/* Shared Legend */}
+          <div className="bg-white dark:bg-gray-900 p-4 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
+            <div className="flex flex-wrap justify-center items-center gap-3 text-sm">
+              {[
+                { name: "Strong Positive", color: sentimentColors.sPositive },
+                { name: "Positive", color: sentimentColors.positive },
+                { name: "Weak Positive", color: sentimentColors.wPositive },
+                { name: "Neutral", color: sentimentColors.neutral },
+                { name: "Weak Negative", color: sentimentColors.wNegative },
+                { name: "Negative", color: sentimentColors.negative },
+                { name: "Strong Negative", color: sentimentColors.sNegative }
+              ].map((item, index) => (
+                <div key={index} className="flex items-center px-2 py-1">
+                  <div 
+                    className="w-3 h-3 rounded-full mr-2"
+                    style={{ backgroundColor: item.color }}
+                  />
+                  <span className="text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                    {item.name}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>

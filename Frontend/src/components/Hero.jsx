@@ -17,11 +17,11 @@ const Hero = ({ isCollapsed }) => {
   }, []);
 
   return (
-    <div className={`flex flex-col items-center justify-center min-h-[80vh] text-center font-sora font-semibold transition-all duration-300 ${isCollapsed ? "pl-0" : "pl-4"} max-w-[1920px] mx-auto px-4 lg:px-8`}>
+    <div className={`flex flex-col items-center justify-center min-h-[80vh] text-center font-sora font-semibold transition-all duration-300 ${isCollapsed ? "pl-0" : "pl-4"} max-w-[1920px] mx-auto px-4 lg:px-8 hide-scrollbar`}>
       <img
         src={youtubeIcon}
         alt="YouTube Logo"
-        className="size-40 mt-10 mb-4 select-none max-w-[160px] lg:max-w-[200px]"
+        className="size-40 mt-10 mb-2 select-none max-w-[160px] lg:max-w-[200px]"
       />
 
       <div className="text-4xl lg:text-5xl font-bold dark:text-white text-gray-800 mb-2 select-none">
@@ -42,7 +42,7 @@ const Hero = ({ isCollapsed }) => {
         </button>
       </NavLink>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl w-full mt-12 px-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl w-full mt-4 px-4">
         <div className="p-6 rounded-xl transition-colors duration-300">
           <img
             src={reportIcon}
