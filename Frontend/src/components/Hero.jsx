@@ -11,6 +11,7 @@ const Hero = ({ isCollapsed }) => {
 
   useEffect(() => {
     localStorage.removeItem("sentimentData");
+    localStorage.removeItem("aiInsightsData");
     localStorage.removeItem("commentCount");
     localStorage.removeItem("videoUrl");
   }, []);

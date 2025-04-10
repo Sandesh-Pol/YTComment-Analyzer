@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import commentInput from "../assets/images/comment-input.svg";
 
 const LinkInputSection = ({ isCollapsed }) => {
-  useTheme(); 
+  useTheme();
   const navigate = useNavigate();
 
   const [videoUrl, setVideoUrl] = useState("");
@@ -16,12 +16,13 @@ const LinkInputSection = ({ isCollapsed }) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-    
+
     try {
       localStorage.removeItem("sentimentData");
+      localStorage.removeItem("aiInsightsData");
       localStorage.removeItem("commentCount");
       localStorage.removeItem("videoUrl");
-      
+
       const response = await fetch("http://127.0.0.1:8000/api/sentiment/", {
         method: "POST",
         headers: {
@@ -29,21 +30,20 @@ const LinkInputSection = ({ isCollapsed }) => {
         },
         body: JSON.stringify({
           video_url: videoUrl,
-          comment_count: parseInt(commentCount)
+          comment_count: parseInt(commentCount),
         }),
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.message || `Error: ${response.status}`);
       }
-      
+
       localStorage.setItem("sentimentData", JSON.stringify(data));
       localStorage.setItem("videoUrl", videoUrl);
       localStorage.setItem("commentCount", commentCount);
       navigate("/analysis");
-      
     } catch (err) {
       console.error("Error fetching data:", err);
       setError(err.message || "Failed to analyze comments. Please try again.");
@@ -140,7 +140,9 @@ const LinkInputSection = ({ isCollapsed }) => {
                 type="submit"
                 disabled={isLoading}
                 className={`bg-brightRed text-white px-8 py-2 rounded-full text-base font-semibold transition-colors shadow-[0_0_30px_rgba(242,0,1,0.5)] ${
-                  isLoading ? "opacity-70 cursor-not-allowed" : "hover:bg-brightRed/80"
+                  isLoading
+                    ? "opacity-70 cursor-not-allowed"
+                    : "hover:bg-brightRed/80"
                 }`}
               >
                 {isLoading ? "Analyzing..." : "Analyze My Comments"}
