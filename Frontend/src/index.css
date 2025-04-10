@@ -13,3 +13,33 @@ property to none, effectively hiding the scrollbar. */
 .hide-scrollbar {
   scrollbar-width: none;
 }
+
+
+
+
+
+@layer utilities {
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @scroll-timeline fadeInTimeline {
+    source: auto;
+    orientation: block;
+    scroll-offsets: start 0, end 100%;
+  }
+
+  .scroll-fade-in {
+    animation-name: fade-in;
+    animation-fill-mode: both;
+    animation-duration: 1s;
+    animation-timeline: fadeInTimeline;
+  }
+}

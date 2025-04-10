@@ -7,6 +7,7 @@ statistics
 matplotlib
 torch 
 transformers
+django-cors-headers
 
 
 

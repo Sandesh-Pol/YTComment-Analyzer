@@ -1,17 +1,55 @@
 import { useState } from "react";
 import { useTheme } from "../hooks/useTheme.js";
+import { useNavigate } from "react-router-dom";
 import commentInput from "../assets/images/comment-input.svg";
+
 const LinkInputSection = ({ isCollapsed }) => {
-  useTheme(); // Using for theme context
+  useTheme(); 
+  const navigate = useNavigate();
 
   const [videoUrl, setVideoUrl] = useState("");
   const [commentCount, setCommentCount] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle the form submission logic here
-    console.log("Video URL:", videoUrl);
-    console.log("Comment Count:", commentCount);
+    setIsLoading(true);
+    setError("");
+    
+    try {
+      localStorage.removeItem("sentimentData");
+      localStorage.removeItem("commentCount");
+      localStorage.removeItem("videoUrl");
+      
+      const response = await fetch("http://127.0.0.1:8000/api/sentiment/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          video_url: videoUrl,
+          comment_count: parseInt(commentCount)
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || `Error: ${response.status}`);
+      }
+      
+      localStorage.setItem("sentimentData", JSON.stringify(data));
+      localStorage.setItem("videoUrl", videoUrl);
+      localStorage.setItem("commentCount", commentCount);
+      navigate("/analysis");
+      
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      setError(err.message || "Failed to analyze comments. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -41,8 +79,13 @@ const LinkInputSection = ({ isCollapsed }) => {
               analyze.
             </p>
 
+            {error && (
+              <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
+                {error}
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Video URL input */}
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-lg font-medium dark:text-white text-gray-700">
                   <span className="text-xl">📺</span> Video URL
@@ -63,7 +106,6 @@ const LinkInputSection = ({ isCollapsed }) => {
                 </p>
               </div>
 
-              {/* Comment count input */}
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-lg font-medium dark:text-white text-gray-700">
                   <span className="text-xl">💬</span> Number of Comments
@@ -96,9 +138,12 @@ const LinkInputSection = ({ isCollapsed }) => {
 
               <button
                 type="submit"
-                className="bg-brightRed text-white px-8 py-2 rounded-full text-base font-semibold hover:bg-brightRed/80 transition-colors shadow-[0_0_30px_rgba(242,0,1,0.5)]"
+                disabled={isLoading}
+                className={`bg-brightRed text-white px-8 py-2 rounded-full text-base font-semibold transition-colors shadow-[0_0_30px_rgba(242,0,1,0.5)] ${
+                  isLoading ? "opacity-70 cursor-not-allowed" : "hover:bg-brightRed/80"
+                }`}
               >
-                Analyze My Comments
+                {isLoading ? "Analyzing..." : "Analyze My Comments"}
               </button>
 
               <div className="pt-4 flex flex-wrap gap-4 justify-center md:justify-start">

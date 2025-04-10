@@ -4,9 +4,16 @@ import comments from "../assets/images/comments.png";
 import ai from "../assets/images/ai.png";
 import { NavLink } from "react-router-dom";
 import { useTheme } from "../hooks/useTheme.js";
+import { useEffect } from "react";
 
 const Hero = ({ isCollapsed }) => {
   useTheme();
+
+  useEffect(() => {
+    localStorage.removeItem("sentimentData");
+    localStorage.removeItem("commentCount");
+    localStorage.removeItem("videoUrl");
+  }, []);
 
   return (
     <div className={`flex flex-col items-center justify-center min-h-[80vh] text-center font-sora font-semibold transition-all duration-300 ${isCollapsed ? "pl-0" : "pl-4"}`}>
