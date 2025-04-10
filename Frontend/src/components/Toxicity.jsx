@@ -64,13 +64,13 @@ const Toxicity = ({ isCollapsed }) => {
   }
 
   return (
-    <div className={`flex flex-col items-start min-h-[80vh] font-sora transition-all duration-300 mt-16 px-6 ${isCollapsed ? "pl-0" : "pl-4"}`}>
+    <div className={`flex flex-col items-start min-h-[80vh] font-sora transition-all duration-300 mt-16 px-4 lg:px-6 ${isCollapsed ? "pl-0" : "pl-4"} max-w-[1920px] mx-auto`}>
       <div className="w-full max-w-4xl mx-auto">
-        <h1 className="text-5xl font-bold dark:text-white text-gray-800 mb-3">Toxicity Review</h1>
-        <p className="dark:text-gray-300 text-gray-600 text-lg mb-4">
+        <h1 className="text-3xl lg:text-5xl font-bold dark:text-white text-gray-800 mb-3">Toxicity Review</h1>
+        <p className="dark:text-gray-300 text-gray-600 text-base lg:text-lg mb-4">
           Monitor and analyze toxic comments from your YouTube videos
         </p>
-        <div className="w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border dark:border-gray-700 border-gray-100">
+        <div className="w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 lg:p-6 border dark:border-gray-700 border-gray-100">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold dark:text-white text-gray-800">Recent Comments</h2>
             <div className="flex gap-4">

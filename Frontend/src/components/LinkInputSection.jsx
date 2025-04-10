@@ -56,11 +56,11 @@ const LinkInputSection = ({ isCollapsed }) => {
     <div
       className={`flex min-h-screen transition-all duration-300 ${
         isCollapsed ? "pl-0" : "pl-4"
-      }`}
+      } max-w-[1920px] mx-auto`}
     >
-      <div className="w-full max-w-5xl mx-auto px-4 py-12">
-        <div className="w-full flex flex-col md:flex-row gap-8 items-center">
-          <div className="w-full md:w-5/12 flex justify-center">
+      <div className="w-full max-w-5xl mx-auto px-4 lg:px-8 py-8 lg:py-12">
+        <div className="w-full flex flex-col lg:flex-row gap-8 items-center">
+          <div className="w-full lg:w-5/12 flex justify-center">
             <img
               src={commentInput}
               alt="YouTube Comment Analysis"
@@ -68,12 +68,12 @@ const LinkInputSection = ({ isCollapsed }) => {
             />
           </div>
 
-          <div className="w-full md:w-7/12">
-            <h1 className="text-4xl md:text-5xl font-bold dark:text-white text-gray-800 mb-4">
+          <div className="w-full lg:w-7/12">
+            <h1 className="text-3xl lg:text-5xl font-bold dark:text-white text-gray-800 mb-4">
               Ready to Decode Your Comments?
             </h1>
 
-            <p className="text-lg dark:text-gray-300 text-gray-600 mb-8">
+            <p className="text-base lg:text-lg dark:text-gray-300 text-gray-600 mb-8">
               <span className="inline-block mr-2">🔍</span> Paste your YouTube
               video link and choose how many comments you want Insightify to
               analyze.

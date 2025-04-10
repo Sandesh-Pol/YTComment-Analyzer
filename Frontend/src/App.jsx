@@ -19,9 +19,9 @@ function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
-        <div className="dark:bg-jetBlack bg-gray-100 w-full h-screen overflow-hidden font-inter">
+        <div className="dark:bg-jetBlack bg-gray-100 w-full min-h-screen overflow-hidden font-inter">
           <Sidebar isCollapsed={isCollapsed} toggleSidebar={toggleSidebar} />
-          <main className={`transition-all duration-300 ${isCollapsed ? "ml-16" : "ml-60"} h-screen overflow-hidden`}>
+          <main className={`transition-all duration-300 ${isCollapsed ? "ml-16" : "ml-60"} min-h-screen overflow-hidden max-w-[1920px] mx-auto`}>
             <Routes>
               <Route path="/" element={<Hero isCollapsed={isCollapsed} />} />
               <Route path="/analysis" element={<Analysis isCollapsed={isCollapsed} />} />
