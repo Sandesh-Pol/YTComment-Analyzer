@@ -12,6 +12,8 @@ from analysis.src.analysis.geminiAnalyzer import YouTubeCommentAnalyzerWithAI
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 # Initialize components once to avoid re-instantiating them in each request
 client = YouTubeClient()
@@ -73,6 +75,7 @@ async def analyze_with_gemini(video_url, comment_limit):
         'total_comments': len(cleaned_comments)
     }
 
+@method_decorator(csrf_exempt, name='dispatch')
 class YouTubeCommentAnalysis(APIView):
     """DRF API view to analyze YouTube comments."""
     
@@ -95,6 +98,7 @@ class YouTubeCommentAnalysis(APIView):
         results = asyncio.run(analyze_comments(video_url, comment_limit))
         return Response(results, status=status.HTTP_200_OK)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class GeminiReportAnalysis(APIView):
     """DRF API view to analyze YouTube comments using Gemini AI only."""
     
@@ -115,4 +119,5 @@ class GeminiReportAnalysis(APIView):
             )
 
         results = asyncio.run(analyze_with_gemini(video_url, comment_limit))
-        return Response(results, status=status.HTTP_200_OK)
+        response = Response(results, status=status.HTTP_200_OK)
+        return response
