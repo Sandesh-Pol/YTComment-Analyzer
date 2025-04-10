@@ -12,7 +12,7 @@ from processing.cleaners import clean_text
 from analysis.sentiment import SentimentAnalyzer
 from analysis.emojis import EmojiAnalyzer
 from analysis.ToxicityAnalyzer import BertToxicityAnalyzer
-from analysis.geminiAnalyzer import YouTubeCommentAnalyzer as GeminiAnalyzer
+from analysis.geminiAnalyzer import YouTubeCommentAnalyzerWithAI as GeminiAnalyzer
 import nltk
 
 nltk.download('vader_lexicon')

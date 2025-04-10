@@ -103,10 +103,22 @@ const AiInsights = ({ isCollapsed = false }) => {
           }
         }
 
+        console.log('Making API request with:', {
+          video_url: videoUrl,
+          comment_limit: parseInt(commentCount)
+        });
+
         const response = await axios.post('http://127.0.0.1:8000/api/aireport/', {
           video_url: videoUrl,
-          comment_count: parseInt(commentCount)
+          comment_limit: parseInt(commentCount)
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
         });
+
+        console.log('API Response:', response);
 
         if (response.data) {
           localStorage.setItem("aiInsightsData", JSON.stringify(response.data));
@@ -117,6 +129,12 @@ const AiInsights = ({ isCollapsed = false }) => {
         }
       } catch (err) {
         console.error("Error fetching AI insights:", err);
+        console.error("Error details:", {
+          message: err.message,
+          response: err.response,
+          request: err.request
+        });
+        
         if (err.response?.status === 500) {
           setError("Server error: Failed to generate AI insights. Please try again.");
         } else if (err.message === 'No analysis data available') {
