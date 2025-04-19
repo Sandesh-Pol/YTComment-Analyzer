@@ -1,0 +1,33 @@
+### Register a new user
+POST http://localhost:8000/api/auth/register/
+Content-Type: application/json
+
+{
+    "email": "sandeshpol268@gmail.com",
+    "username": "testuser",
+    "password": "Test@123",
+    "confirm_password": "Test@123"
+}
+
+### Verify OTP
+POST http://localhost:8000/api/auth/verify-otp/
+Content-Type: application/json
+
+{
+    "email": "sandeshpol268@gmail.com",
+    "otp": "123456"  // Replace with the OTP received in email
+}
+
+### Login
+POST http://localhost:8000/api/auth/login/
+Content-Type: application/json
+
+{
+    "email": "sandeshpol268@gmail.com",
+    "password": "Test@123"
+}
+
+### Logout (Requires authentication)
+POST http://localhost:8000/api/auth/logout/
+Content-Type: application/json
+Cookie: sessionid=your_session_id_here 

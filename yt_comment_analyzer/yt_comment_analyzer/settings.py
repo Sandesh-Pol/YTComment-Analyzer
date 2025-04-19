@@ -36,10 +36,10 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
     'analysis',
+    'auth_api',
 ]
 
 MIDDLEWARE = [
@@ -124,21 +124,6 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
-import os
-
-# URL to use when referring to static files (where they will be served from)
-STATIC_URL = '/static/'
-
-# The absolute path to the directory where collectstatic will collect static files for deployment
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# Additional locations the staticfiles app will traverse
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
 
 
 # Default primary key field type
@@ -146,7 +131,32 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
- # Replace with your API key
+# Custom User Model
+AUTH_USER_MODEL = 'auth_api.User'
+
+# Rest Framework Settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'sdcr7ff@gmail.com'  # Your Gmail address
+EMAIL_HOST_PASSWORD = 'kswttbptaujbfqfe'  # Your Gmail App Password
+
+# For development/testing, you can use the console email backend
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Replace with your API key
 
 
 
