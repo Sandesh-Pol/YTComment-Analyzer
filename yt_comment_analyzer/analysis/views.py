@@ -14,6 +14,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import authentication_classes, permission_classes
 
 # Initialize components once to avoid re-instantiating them in each request
 client = YouTubeClient()
@@ -74,7 +77,8 @@ async def analyze_with_gemini(video_url, comment_limit):
         },
         'total_comments': len(cleaned_comments)
     }
-
+@authentication_classes([BasicAuthentication])  # disables session-based CSRF checks
+@permission_classes([AllowAny])
 @method_decorator(csrf_exempt, name='dispatch')
 class YouTubeCommentAnalysis(APIView):
     """DRF API view to analyze YouTube comments."""
@@ -97,7 +101,10 @@ class YouTubeCommentAnalysis(APIView):
 
         results = asyncio.run(analyze_comments(video_url, comment_limit))
         return Response(results, status=status.HTTP_200_OK)
-
+    
+    
+@authentication_classes([BasicAuthentication])  # disables session-based CSRF checks
+@permission_classes([AllowAny])
 @method_decorator(csrf_exempt, name='dispatch')
 class GeminiReportAnalysis(APIView):
     """DRF API view to analyze YouTube comments using Gemini AI only."""
