@@ -112,7 +112,7 @@ const Toxicity = ({ isCollapsed }) => {
                         User
                       </div>
                     </div>
-                    <div className={`w-[calc(100%-144px)] h-16 overflow-y-auto mr-4 py-1 ${
+                    <div className={`w-[calc(100%-144px)] h-16 overflow-y-auto mr-4 py-1 small-scrollbar ${
                       score > 70 
                         ? 'text-red-600 dark:text-red-400 font-medium' 
                         : 'dark:text-gray-200 text-gray-700'

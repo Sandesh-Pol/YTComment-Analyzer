@@ -13,6 +13,29 @@ body::-webkit-scrollbar {
 .hide-scrollbar {
   scrollbar-width: none;
 }
+.small-scrollbar {
+  scrollbar-width: thin; /* Firefox: thin, auto, none */
+  scrollbar-color: #888 #f1f1f1; /* thumb and track colors */
+}
+
+.small-scrollbar::-webkit-scrollbar {
+  width: 1px;
+  height: 1px;
+}
+
+.small-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+
+.small-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
 
 
 

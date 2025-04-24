@@ -177,25 +177,26 @@ export function SentimentAnalysis({ sentiment }) {
   const renderCustomizedLabel = (props) => {
     const { cx, cy, midAngle, outerRadius, value, fill } = props;
     const RADIAN = Math.PI / 180;
-    // Only show labels for segments with value > 5%
-    if (value <= 5) return null;
+    // Remove minimum threshold to show all values
+    if (value === 0) return null;
 
-    // Calculate optimal line length based on value
-    const lineLength = Math.min(Math.max(value * 1.5, 30), 60);
+    // Adjust line length - make it more consistent for small values
+    const lineLength = Math.min(Math.max(30, value * 1.2), 45);
     
-    // Calculate points for the label line
-    const radius = outerRadius + 10;
+    // Calculate points for the label line with increased spacing
+    const radius = outerRadius + 5;
     const x1 = cx + radius * Math.cos(-midAngle * RADIAN);
     const y1 = cy + radius * Math.sin(-midAngle * RADIAN);
     
-    // Add a slight curve to the line to avoid overlaps
-    const curve = 20 * Math.sin(midAngle * RADIAN);
+    // Increase spacing between labels
+    const curve = 10 * Math.sin(midAngle * RADIAN);
     const x2 = cx + (radius + lineLength) * Math.cos(-midAngle * RADIAN) + curve;
     const y2 = cy + (radius + lineLength) * Math.sin(-midAngle * RADIAN);
 
     const textAnchor = Math.cos(-midAngle * RADIAN) >= 0 ? 'start' : 'end';
     const textOffset = Math.cos(-midAngle * RADIAN) >= 0 ? 5 : -5;
 
+    // Add background to make small values more readable
     return (
       <g>
         <path
@@ -203,7 +204,16 @@ export function SentimentAnalysis({ sentiment }) {
           stroke={fill}
           strokeWidth={1}
           fill="none"
-          opacity={0.6}
+          opacity={0.9}
+        />
+        <rect
+          x={x2 + (textAnchor === 'start' ? -2 : -28)}
+          y={y2 - 6}
+          width={30}
+          height={12}
+          fill="rgba(0,0,0,0.3)"
+          rx={2}
+          className="dark:fill-gray-800/30"
         />
         <text
           x={x2 + textOffset}
@@ -211,15 +221,14 @@ export function SentimentAnalysis({ sentiment }) {
           textAnchor={textAnchor}
           dominantBaseline="central"
           className="text-xs font-medium fill-gray-700 dark:fill-gray-300"
-          style={{ fontSize: '11px', opacity: 0.9 }}
+          style={{ fontSize: '9px', opacity: 1 }}
         >
-          {`${value.toFixed(1)}`}
+          {`${value.toFixed(1)}%`}
         </text>
       </g>
     );
   };
 
-  // Center content for each chart
   const renderCenterContent = (score, type) => {
     const emoji = score > 0.3 ? "😊" : score < -0.3 ? "😔" : "😐";
     const scoreColor = getSentimentTextColor(score);
@@ -266,7 +275,6 @@ export function SentimentAnalysis({ sentiment }) {
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <div className="w-full overflow-hidden">
         <div className="w-full p-6 space-y-6">
-          {/* Header Section */}
           <div className="space-y-2">
             <h2 className="text-3xl font-bold tracking-tight dark:text-white">Sentiment Analysis</h2>
             <p className="text-lg text-gray-600 dark:text-gray-300">
@@ -274,9 +282,7 @@ export function SentimentAnalysis({ sentiment }) {
             </p>
           </div>
 
-          {/* Charts Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* VADER Chart */}
             <div className="bg-white dark:bg-gray-900 overflow-hidden rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
               <div className="p-6">
                 <h3 className="text-xl font-semibold mb-4 dark:text-white">VADER Distribution</h3>
@@ -295,7 +301,8 @@ export function SentimentAnalysis({ sentiment }) {
                           dataKey="value"
                           labelLine={true}
                           label={renderCustomizedLabel}
-                          paddingAngle={2}
+                          paddingAngle={3}
+                          minAngle={3}
                           isAnimationActive={false}
                           strokeWidth={1}
                           stroke="#1E293B"
@@ -319,7 +326,6 @@ export function SentimentAnalysis({ sentiment }) {
               </div>
             </div>
 
-            {/* TextBlob Chart */}
             <div className="bg-white dark:bg-gray-900 overflow-hidden rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
               <div className="p-6">
                 <h3 className="text-xl font-semibold mb-4 dark:text-white">TextBlob Distribution</h3>
@@ -338,7 +344,8 @@ export function SentimentAnalysis({ sentiment }) {
                           dataKey="value"
                           labelLine={true}
                           label={renderCustomizedLabel}
-                          paddingAngle={2}
+                          paddingAngle={3}
+                          minAngle={3}
                           isAnimationActive={false}
                           strokeWidth={1}
                           stroke="#1E293B"
@@ -363,7 +370,6 @@ export function SentimentAnalysis({ sentiment }) {
             </div>
           </div>
 
-          {/* Shared Legend */}
           <div className="bg-white dark:bg-gray-900 p-4 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
             <div className="flex flex-wrap justify-center items-center gap-3 text-sm">
               {[

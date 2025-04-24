@@ -33,4 +33,4 @@ class OTPVerificationSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'username', 'is_verified') 
+        fields = ('id', 'email', 'username', 'is_verified')
