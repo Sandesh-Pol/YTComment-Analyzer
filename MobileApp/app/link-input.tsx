@@ -131,7 +131,7 @@ export default function LinkInput() {
           ) : null}
 
           {/* Video URL Input */}
-          <View className="mb-6">
+          <View className="mb-6 w-full">
             <Text className="text-white mb-2 text-base">🎥 Video URL</Text>
             <TextInput
               value={videoUrl}
@@ -141,13 +141,13 @@ export default function LinkInput() {
               }}
               placeholder="https://www.youtube.com/watch?v=abc123"
               placeholderTextColor="#666"
-              className="bg-[#2a2a2a] text-white p-4 rounded-lg mb-2"
+              className="bg-[#2a2a2a] text-white p-4 rounded-lg mb-2 h-16"
               editable={!isLoading}
               autoCapitalize="none"
               autoCorrect={false}
               keyboardType="url"
             />
-            <Text className="text-gray-400 text-sm">ℹ️ Example: https://youtube.com/watch?v=abc123 or https://youtu.be/abc123</Text>
+            <Text className="text-gray-400 text-sm">ℹ️  We support public videos only.</Text>
           </View>
 
           {/* Comment Count Input */}
@@ -159,10 +159,10 @@ export default function LinkInput() {
               placeholder="e.g. 100"
               placeholderTextColor="#666"
               keyboardType="number-pad"
-              className="bg-[#2a2a2a] text-white p-4 rounded-lg mb-2"
+              className="bg-[#2a2a2a] text-white p-4 rounded-lg mb-2 h-16"
               editable={!isLoading}
             />
-            <Text className="text-gray-400 text-sm">📉 We'll analyze the top comments first. Max value is 500</Text>
+            <Text className="text-gray-400 text-sm">📉  We'll analyze the top comments first. Max value is 500</Text>
           </View>
 
           {/* Analyze Button */}
@@ -186,17 +186,17 @@ export default function LinkInput() {
           </TouchableOpacity>
 
           {/* Feature Tags */}
-          <View className="flex-row justify-between items-center mb-8">
+          <View className="flex-row justify-between items-center mb-8 mt-5">
             <View className="items-center">
-              <Text className="text-white text-sm">🧠</Text>
+              <Text className="text-white text-2xl">🧠</Text>
               <Text className="text-gray-400 text-xs mt-1">Emotion Detection</Text>
             </View>
             <View className="items-center">
-              <Text className="text-white text-sm">😊</Text>
+              <Text className="text-white text-2xl">😊</Text>
               <Text className="text-gray-400 text-xs mt-1">Sentiment Analysis</Text>
             </View>
             <View className="items-center">
-              <Text className="text-white text-sm">☠️</Text>
+              <Text className="text-white text-2xl">☠️</Text>
               <Text className="text-gray-400 text-xs mt-1">Toxicity Filtering</Text>
             </View>
           </View>

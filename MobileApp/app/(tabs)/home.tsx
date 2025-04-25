@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
-import { Link, useRouter } from 'expo-router';
+import { Link } from 'expo-router';
+import { useAnalysisStore } from '../store';
 
 const FeatureCard = ({ title, icon }: { title: string; icon: any }) => (
   <View className="items-center p-4 rounded-lg w-28">
@@ -9,6 +10,8 @@ const FeatureCard = ({ title, icon }: { title: string; icon: any }) => (
 );
 
 export default function Home() {
+  const { reset } = useAnalysisStore();
+  
   return (
     <ScrollView className="flex-1 bg-[#1a1a1a]">
       <View className="flex-1 items-center justify-center py-6 px-4">
@@ -35,7 +38,12 @@ export default function Home() {
 
         {/* CTA Button */}
         <Link href="../link-input" asChild>
-          <TouchableOpacity className="bg-red-600 rounded-full px-8 py-3 mb-12">
+          <TouchableOpacity 
+            className="bg-red-600 rounded-full px-8 py-3 mb-12"
+            onPress={() => {
+              reset(); 
+            }}
+          >
             <Text className="text-white font-bold text-lg">
               GET INSIGHTS NOW
             </Text>
