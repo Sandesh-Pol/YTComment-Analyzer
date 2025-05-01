@@ -7,12 +7,14 @@ __pycache__/
 *$py.class
 
 # Ignore virtual environment files
-venv/
-.env/
-.env*/
+.env
 .env.local
 .env.development
 .env.production
+!.env.example  # Allow the example environment file
+venv/
+.env/
+.env*/
 
 # Ignore IDE-specific files
 .vscode/

@@ -26,7 +26,7 @@ class YouTubeCommentAnalyzerWithAI:
         You are an AI assistant analyzing YouTube comments. Given the following comments:
         {self.comments}
         
-        Provide a concise **pointwise summary** in 10 lines.
+        Provide a concise **pointwise summary** in 5 lines.
         """
         response = self.model.generate_content(prompt)
         return response.text.strip()
@@ -53,7 +53,7 @@ class YouTubeCommentAnalyzerWithAI:
         Based on the following YouTube comments:
         {self.comments}
         
-        Generate **5 to 10 constructive suggestions** for the YouTuber to improve their content.
+        Generate ** Only 5  constructive suggestions** for the YouTuber to improve their content.
         """
         response = self.model.generate_content(prompt)
         return response.text.strip()

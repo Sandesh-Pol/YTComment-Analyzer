@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 
 // Your computer's local IP address
-const LOCAL_IP = '192.168.53.89';
+const LOCAL_IP = '192.168.6.23';
 
 // Get the appropriate base URL based on the environment
 const getBaseUrl = () => {
