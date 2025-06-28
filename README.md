@@ -1,5 +1,5 @@
 
-(https://github.com/user-attachments/assets/3b358876-17a8-47f3-a4a3-3ca5f2f50dac)
+!(https://github.com/user-attachments/assets/3b358876-17a8-47f3-a4a3-3ca5f2f50dac)
 ## Insightfy
 
 Insightify is a comprehensive analytics platform that includes a web application, mobile app, and backend services for analyzing YouTube comments and providing valuable insights.
