@@ -1,6 +1,10 @@
-# Insightify
 
+
+# 🚀 Insightify
 Insightify is a comprehensive analytics platform that includes a web application, mobile app, and backend services for analyzing YouTube comments and providing valuable insights.
+
+## Demo Video
+https://github.com/user-attachments/assets/20f91138-f3d5-48eb-841e-1dc6a6de27ca
 
 ## 🌟 Features
 
